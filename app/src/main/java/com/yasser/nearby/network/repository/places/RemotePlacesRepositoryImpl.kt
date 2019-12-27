@@ -1,13 +1,13 @@
 package com.yasser.nearby.network.repository.places
 
 import com.yasser.nearby.network.NetworkNoResultsException
-import com.yasser.nearby.network.api.explore.ExplorePlacesImplementation
+import com.yasser.nearby.network.api.explore.ExplorePlacesImpl
 import com.yasser.nearby.network.model.ExploreResponse
 import com.yasser.nearby.network.model.Venue
 import io.reactivex.Single
 
-class RemotePlacesRepositoryImplementation(
-    private val explorePlacesApi: ExplorePlacesImplementation
+class RemotePlacesRepositoryImpl(
+    private val explorePlacesApi: ExplorePlacesImpl
 ) : RemotePlacesRepository {
 
     override fun getNearbyPlaces(
