@@ -1,19 +1,19 @@
 package com.yasser.nearby.network.model
 
-data class ExploreResponse(private val groups: List<Group>)
+data class ExploreResponse(val groups: List<Group>)
 
 data class Group(
-    private val type: String,
-    private val name: String,
-    private val items: List<GroupItem>
+    val type: String,
+    val name: String,
+    val items: List<GroupItem>
 )
 
-data class GroupItem(private val venues: List<Venue>)
+data class GroupItem(val venues: List<Venue>)
 
 data class Venue(
-    private val id: String,
-    private val name: String,
-    private val location: FoursquareLocation
+    val id: String,
+    val name: String,
+    val location: FoursquareLocation
 )
 
-data class FoursquareLocation(private val formattedAddress: List<String>)
+data class FoursquareLocation(val formattedAddress: List<String>)
