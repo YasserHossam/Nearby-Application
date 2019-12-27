@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-class ExplorePlacesImpl private constructor(retrofit: Retrofit) : ExplorePlacesApi {
+class ExplorePlacesApiImpl private constructor(retrofit: Retrofit) : ExplorePlacesApi {
 
     private val api: Api
 
@@ -17,12 +17,12 @@ class ExplorePlacesImpl private constructor(retrofit: Retrofit) : ExplorePlacesA
 
     companion object {
 
-        private lateinit var INSTANCE: ExplorePlacesImpl
+        private lateinit var INSTANCE: ExplorePlacesApiImpl
 
-        fun getExploreApiInstance(retrofit: Retrofit): ExplorePlacesImpl {
+        fun getExploreApiInstance(retrofit: Retrofit): ExplorePlacesApiImpl {
             if (!this::INSTANCE.isInitialized)
                 INSTANCE =
-                    ExplorePlacesImpl(
+                    ExplorePlacesApiImpl(
                         retrofit
                     )
             return INSTANCE
