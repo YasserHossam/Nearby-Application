@@ -27,6 +27,7 @@ class RetrofitProvider private constructor() {
                 : Retrofit {
             if (!this::INSTANCE.isInitialized) {
                 val httpLoggingInterceptor = HttpLoggingInterceptor()
+                httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
 
                 val userlessAuthenticationInterceptor = UserlessAuthenticationInterceptor(
                     clientId,
