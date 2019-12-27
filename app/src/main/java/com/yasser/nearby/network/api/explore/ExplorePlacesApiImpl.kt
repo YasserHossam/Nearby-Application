@@ -31,10 +31,9 @@ class ExplorePlacesApiImpl private constructor(retrofit: Retrofit) : ExplorePlac
 
     override fun explore(
         latLong: String,
-        radius: Int,
-        limit: Int
+        radius: Int
     ): Single<FoursquareResponse<ExploreResponse>> {
-        return api.explorePlaces(latLong, radius, limit)
+        return api.explorePlaces(latLong, radius)
     }
 
 
@@ -42,8 +41,7 @@ class ExplorePlacesApiImpl private constructor(retrofit: Retrofit) : ExplorePlac
         @GET("venues/explore?")
         fun explorePlaces(
             @Query("ll") latLong: String,
-            @Query("radius") searchRadius: Int,
-            @Query("limit") resultsLimit: Int
+            @Query("radius") searchRadius: Int
         ): Single<FoursquareResponse<ExploreResponse>>
     }
 }

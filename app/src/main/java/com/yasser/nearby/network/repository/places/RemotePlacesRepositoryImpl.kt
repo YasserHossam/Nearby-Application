@@ -11,10 +11,9 @@ class RemotePlacesRepositoryImpl(private val explorePlacesApi: ExplorePlacesApi)
 
     override fun getNearbyPlaces(
         latLong: String,
-        radius: Int,
-        limit: Int
+        radius: Int
     ): Single<List<Venue>> {
-        return explorePlacesApi.explore(latLong, radius, limit)
+        return explorePlacesApi.explore(latLong, radius)
             .map { getVenuesOrException(it.response) }
     }
 

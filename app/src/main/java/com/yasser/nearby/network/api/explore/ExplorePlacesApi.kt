@@ -7,7 +7,6 @@ import io.reactivex.Single
 interface ExplorePlacesApi {
     fun explore(
         latLong: String,
-        radius: Int,
-        limit: Int
+        radius: Int
     ): Single<FoursquareResponse<ExploreResponse>>
 }

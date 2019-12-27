@@ -6,7 +6,6 @@ import io.reactivex.Single
 interface RemotePlacesRepository {
     fun getNearbyPlaces(
         latLong: String,
-        radius: Int,
-        limit: Int
+        radius: Int
     ): Single<List<Venue>>
 }
