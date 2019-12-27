@@ -13,7 +13,10 @@ class RetrofitProvider private constructor(){
     companion object {
         private lateinit var INSTANCE: Retrofit
 
-        fun getRetrofitInstance(baseUrl: String, clientId: String, clientSecret: String)
+        fun getRetrofitInstance(baseUrl: String,
+                                clientId: String,
+                                clientSecret: String,
+                                fouresquareApiVersion: String)
                 : Retrofit {
             if(this::INSTANCE.isInitialized)
                 return INSTANCE
@@ -21,11 +24,14 @@ class RetrofitProvider private constructor(){
                 val httpLoggingInterceptor = HttpLoggingInterceptor()
                 val userlessAuthenticationInterceptor = UserlessAuthenticationInterceptor(clientId,
                     clientSecret)
+                val foursquareVersioningInterceptor = FoursquareVersioningInterceptor(
+                    fouresquareApiVersion)
 
-                val okHttpClient = OkHttpClient.Builder()
-                    .addInterceptor(userlessAuthenticationInterceptor)
-                    .addInterceptor(httpLoggingInterceptor)
-                    .build()
+                val okHttpClient = OkHttpClient.Builder().apply {
+                    addInterceptor(userlessAuthenticationInterceptor)
+                    addInterceptor(foursquareVersioningInterceptor)
+                    addInterceptor(httpLoggingInterceptor)
+                }.build()
 
                 val retrofitBuilder = Retrofit.Builder()
                     .baseUrl(baseUrl)
@@ -56,5 +62,22 @@ class RetrofitProvider private constructor(){
             return chain.proceed(request)
         }
 
+    }
+
+    private class FoursquareVersioningInterceptor(val version: String): Interceptor{
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val original = chain.request()
+            val originalHttpUrl = original.url()
+
+            val url = originalHttpUrl.newBuilder()
+                .addQueryParameter("v", version)
+                .build()
+
+            val requestBuilder = original.newBuilder()
+                .url(url)
+
+            val request = requestBuilder.build()
+            return chain.proceed(request)
+        }
     }
 }
