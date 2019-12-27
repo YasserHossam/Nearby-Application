@@ -1,4 +1,4 @@
-package com.yasser.nearby.ui.feed
+package com.yasser.nearby.ui.places
 
 import com.yasser.nearby.core.NetworkException
 import com.yasser.nearby.core.NoResultsException
@@ -9,10 +9,10 @@ import io.reactivex.schedulers.Schedulers
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class FeedPresenter(
+class PlacesPresenter(
     private val nearbyPlacesRepository: NearbyPlacesRepository,
-    private val view: FeedContract.View
-) : FeedContract.Presenter {
+    private val view: PlacesContract.View
+) : PlacesContract.Presenter {
 
     companion object {
         private const val SEARCH_RADIUS = 1000

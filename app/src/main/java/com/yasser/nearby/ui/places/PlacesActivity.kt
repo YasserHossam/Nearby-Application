@@ -1,27 +1,29 @@
-package com.yasser.nearby.ui.feed
+package com.yasser.nearby.ui.places
 
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.yasser.nearby.R
 import com.yasser.nearby.core.ServiceLocator
 import com.yasser.nearby.core.model.AppPlace
+import com.yasser.nearby.ui.places.adapter.PlacesAdapter
 import com.yasser.nearby.ui.utils.*
 import kotlinx.android.synthetic.main.activity_feed.*
 
-class FeedActivity : AppCompatActivity(), FeedContract.View {
+class PlacesActivity : AppCompatActivity(), PlacesContract.View {
 
     companion object {
         private const val REQUEST_PERMISSIONS_REQUEST_CODE = 51
     }
 
-    private val presenter: FeedPresenter by lazy {
-        FeedPresenter(ServiceLocator.getInstance().getNearbyPlacesRepository(), this)
+    private val presenter: PlacesPresenter by lazy {
+        PlacesPresenter(ServiceLocator.getInstance().getNearbyPlacesRepository(), this)
     }
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -30,12 +32,19 @@ class FeedActivity : AppCompatActivity(), FeedContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
 
+        initAdapter()
+
         if (!checkPermissions()) {
             requestPermissions()
         } else {
             initLocationClient()
             getLastKnownLocation()
         }
+    }
+
+    private fun initAdapter() {
+        recyclerPlaces.layoutManager = LinearLayoutManager(this)
+        recyclerPlaces.adapter = PlacesAdapter(arrayListOf())
     }
 
     /** Private Methods **/
@@ -73,7 +82,7 @@ class FeedActivity : AppCompatActivity(), FeedContract.View {
         progress.visibility = View.VISIBLE
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             location?.let {
-               presenter.getNearbyPlaces(it.latitude, it.longitude)
+                presenter.getNearbyPlaces(it.latitude, it.longitude)
             }
         }
     }
@@ -125,13 +134,9 @@ class FeedActivity : AppCompatActivity(), FeedContract.View {
 
     }
 
-    override fun onPlaceFetched(places: AppPlace) {
-        if (recyclerPlaces.adapter == null) {
-            /* InitAdapter */
-        } else {
-            /* Update adapter*/
-        }
-
-
+    override fun onPlaceFetched(place: AppPlace) {
+        val adapter = recyclerPlaces.adapter
+        if (adapter is PlacesAdapter)
+            adapter.addItem(place)
     }
 }

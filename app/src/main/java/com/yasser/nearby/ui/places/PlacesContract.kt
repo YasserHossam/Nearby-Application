@@ -1,9 +1,9 @@
-package com.yasser.nearby.ui.feed
+package com.yasser.nearby.ui.places
 
 import com.yasser.nearby.core.model.AppPlace
 
 
-interface FeedContract {
+interface PlacesContract {
 
     interface View {
         fun showProgress()
@@ -11,7 +11,7 @@ interface FeedContract {
         fun showNoNetworkView()
         fun showNoResultsView()
         fun showGeneralErrorMessage()
-        fun onPlaceFetched(places: AppPlace)
+        fun onPlaceFetched(place: AppPlace)
     }
 
     interface Presenter {
