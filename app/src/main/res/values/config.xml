@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="base_url">https://api.foursquare.com/v2/</string>
+    <string name="client_id">CLIENT_ID</string>
+    <string name="client_secret">CLIENT_SECRET</string>
+</resources>
