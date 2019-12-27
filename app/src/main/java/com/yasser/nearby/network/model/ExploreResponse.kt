@@ -8,7 +8,7 @@ data class Group(
     val items: List<GroupItem>
 )
 
-data class GroupItem(val venues: List<Venue>)
+data class GroupItem(val venue: Venue)
 
 data class Venue(
     val id: String,
