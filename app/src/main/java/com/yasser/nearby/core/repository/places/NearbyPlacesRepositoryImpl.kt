@@ -7,13 +7,13 @@ import com.yasser.nearby.core.model.AppPlace
 import com.yasser.nearby.network.RemoteNetworkException
 import com.yasser.nearby.network.RemoteNoResultsException
 import com.yasser.nearby.network.model.Venue
-import com.yasser.nearby.network.repository.photos.RemotePhotosRepository
+import com.yasser.nearby.network.repository.photos.RemotePlacesPhotosRepository
 import com.yasser.nearby.network.repository.places.RemotePlacesRepository
 import io.reactivex.Observable
 
 class NearbyPlacesRepositoryImpl(
     private val remotePlacesRepository: RemotePlacesRepository,
-    private val remotePhotosRepository: RemotePhotosRepository,
+    private val remotePlacesPhotosRepository: RemotePlacesPhotosRepository,
     private val placeConverter: PlaceConverter
 ) : NearbyPlacesRepository {
 
@@ -38,7 +38,7 @@ class NearbyPlacesRepositoryImpl(
     }
 
     private fun getPhotosObservable(venue: Venue): Observable<AppPlace> {
-        return remotePhotosRepository.getVenuePhotos(venue.id)
+        return remotePlacesPhotosRepository.getVenuePhotos(venue.id)
             .toObservable()
             .map { photoItem ->
                 placeConverter.convertFromNetworkToCore(venue, photoItem)

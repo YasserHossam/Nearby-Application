@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-class VenuesPhotosApiImpl private constructor(retrofit: Retrofit): VenuesPhotosApi {
+class PlacesPhotosApiImpl private constructor(retrofit: Retrofit): PlacesPhotosApi {
 
     private val api: Api
 
@@ -17,12 +17,12 @@ class VenuesPhotosApiImpl private constructor(retrofit: Retrofit): VenuesPhotosA
 
     companion object {
 
-        private lateinit var INSTANCE: VenuesPhotosApiImpl
+        private lateinit var INSTANCE: PlacesPhotosApiImpl
 
-        fun getExploreApiInstance(retrofit: Retrofit): VenuesPhotosApiImpl {
+        fun getExploreApiInstance(retrofit: Retrofit): PlacesPhotosApiImpl {
             if (!this::INSTANCE.isInitialized)
                 INSTANCE =
-                    VenuesPhotosApiImpl(
+                    PlacesPhotosApiImpl(
                         retrofit
                     )
             return INSTANCE
