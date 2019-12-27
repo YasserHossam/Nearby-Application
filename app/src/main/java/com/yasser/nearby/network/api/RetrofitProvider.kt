@@ -9,23 +9,27 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class RetrofitProvider private constructor(){
+class RetrofitProvider private constructor() {
     companion object {
+
         private lateinit var INSTANCE: Retrofit
 
-        fun getRetrofitInstance(baseUrl: String,
-                                clientId: String,
-                                clientSecret: String,
-                                fouresquareApiVersion: String)
+        fun getRetrofitInstance(
+            baseUrl: String,
+            clientId: String,
+            clientSecret: String,
+            fouresquareApiVersion: String
+        )
                 : Retrofit {
-            if(this::INSTANCE.isInitialized)
-                return INSTANCE
-            else {
+            if (!this::INSTANCE.isInitialized) {
                 val httpLoggingInterceptor = HttpLoggingInterceptor()
-                val userlessAuthenticationInterceptor = UserlessAuthenticationInterceptor(clientId,
-                    clientSecret)
+                val userlessAuthenticationInterceptor = UserlessAuthenticationInterceptor(
+                    clientId,
+                    clientSecret
+                )
                 val foursquareVersioningInterceptor = FoursquareVersioningInterceptor(
-                    fouresquareApiVersion)
+                    fouresquareApiVersion
+                )
 
                 val okHttpClient = OkHttpClient.Builder().apply {
                     addInterceptor(userlessAuthenticationInterceptor)
@@ -38,21 +42,25 @@ class RetrofitProvider private constructor(){
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .client(okHttpClient)
-                return retrofitBuilder.build()
+
+                INSTANCE = retrofitBuilder.build()
             }
+            return INSTANCE
         }
 
     }
 
-    private class UserlessAuthenticationInterceptor(val clientId: String,
-                                                    val clientSecret: String): Interceptor{
+    private class UserlessAuthenticationInterceptor(
+        val clientId: String,
+        val clientSecret: String
+    ) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val original = chain.request()
             val originalHttpUrl = original.url()
 
             val url = originalHttpUrl.newBuilder()
                 .addQueryParameter("client_id", clientId)
-                .addQueryParameter("client_secret",clientSecret)
+                .addQueryParameter("client_secret", clientSecret)
                 .build()
 
             val requestBuilder = original.newBuilder()
@@ -64,7 +72,7 @@ class RetrofitProvider private constructor(){
 
     }
 
-    private class FoursquareVersioningInterceptor(val version: String): Interceptor{
+    private class FoursquareVersioningInterceptor(val version: String) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val original = chain.request()
             val originalHttpUrl = original.url()
