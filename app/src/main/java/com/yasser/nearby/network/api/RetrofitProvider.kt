@@ -1,6 +1,6 @@
 package com.yasser.nearby.network.api
 
-import com.yasser.nearby.network.NetworkException
+import com.yasser.nearby.network.RemoteNetworkException
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
@@ -103,7 +103,7 @@ class RetrofitProvider private constructor() {
                 if (exc is SocketTimeoutException ||
                     exc is UnknownHostException ||
                     exc is SSLException)
-                    throw NetworkException()
+                    throw RemoteNetworkException()
                 else
                     throw exc
             }

@@ -1,6 +1,6 @@
 package com.yasser.nearby.network.repository.places
 
-import com.yasser.nearby.network.NetworkNoResultsException
+import com.yasser.nearby.network.RemoteNoResultsException
 import com.yasser.nearby.network.api.explore.ExplorePlacesApi
 import com.yasser.nearby.network.model.ExploreResponse
 import com.yasser.nearby.network.model.Venue
@@ -22,6 +22,6 @@ class RemotePlacesRepositoryImpl(private val explorePlacesApi: ExplorePlacesApi)
         if (response.groups.isNotEmpty()) {
             return response.groups[0].items.map { item -> item.venue }
         } else
-            throw NetworkNoResultsException()
+            throw RemoteNoResultsException()
     }
 }

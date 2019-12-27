@@ -1,6 +1,6 @@
 package com.yasser.nearby.network.repository.photos
 
-import com.yasser.nearby.network.NetworkNoResultsException
+import com.yasser.nearby.network.RemoteNoResultsException
 import com.yasser.nearby.network.api.photos.VenuesPhotosApi
 import com.yasser.nearby.network.model.PhotoItem
 import com.yasser.nearby.network.model.VenuePhotosResponse
@@ -16,6 +16,6 @@ class RemotePhotosRepositoryImpl(private val photosApi: VenuesPhotosApi) : Remot
         if (response.photos.count > 0 && response.photos.items.isNotEmpty())
             return response.photos.items[0]
         else
-            throw NetworkNoResultsException()
+            throw RemoteNoResultsException()
     }
 }

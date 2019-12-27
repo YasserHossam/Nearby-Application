@@ -1,5 +1,5 @@
 package com.yasser.nearby.network
 
-class NetworkException : Exception()
+class RemoteNetworkException : Exception()
 
-class NetworkNoResultsException : Exception()
+class RemoteNoResultsException : Exception()
