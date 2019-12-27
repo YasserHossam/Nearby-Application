@@ -1,4 +1,4 @@
-package com.yasser.nearby.network.api
+package com.yasser.nearby.network.api.photos
 
 import com.yasser.nearby.network.model.FoursquareResponse
 import com.yasser.nearby.network.model.VenuePhotosResponse
@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Path
 
-class VenuesPhotosApi private constructor(retrofit: Retrofit) {
+class VenuesPhotosImplementation private constructor(retrofit: Retrofit): VenuesPhotosApi {
 
     private val api: Api
 
@@ -17,16 +17,19 @@ class VenuesPhotosApi private constructor(retrofit: Retrofit) {
 
     companion object {
 
-        private lateinit var INSTANCE: VenuesPhotosApi
+        private lateinit var INSTANCE: VenuesPhotosImplementation
 
-        fun getExploreApiInstance(retrofit: Retrofit): VenuesPhotosApi {
+        fun getExploreApiInstance(retrofit: Retrofit): VenuesPhotosImplementation {
             if (!this::INSTANCE.isInitialized)
-                INSTANCE = VenuesPhotosApi(retrofit)
+                INSTANCE =
+                    VenuesPhotosImplementation(
+                        retrofit
+                    )
             return INSTANCE
         }
     }
 
-    fun getImages(venueId: String): Single<FoursquareResponse<VenuePhotosResponse>> {
+    override fun getImages(venueId: String): Single<FoursquareResponse<VenuePhotosResponse>> {
         return api.getVenueImages(venueId)
     }
 

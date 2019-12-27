@@ -1,4 +1,4 @@
-package com.yasser.nearby.network.api
+package com.yasser.nearby.network.api.explore
 
 import com.yasser.nearby.network.model.ExploreResponse
 import com.yasser.nearby.network.model.FoursquareResponse
@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-class ExplorePlacesApi private constructor(retrofit: Retrofit) {
+class ExplorePlacesImplementation private constructor(retrofit: Retrofit) : ExplorePlacesApi {
 
     private val api: Api
 
@@ -17,16 +17,19 @@ class ExplorePlacesApi private constructor(retrofit: Retrofit) {
 
     companion object {
 
-        private lateinit var INSTANCE: ExplorePlacesApi
+        private lateinit var INSTANCE: ExplorePlacesImplementation
 
-        fun getExploreApiInstance(retrofit: Retrofit): ExplorePlacesApi {
+        fun getExploreApiInstance(retrofit: Retrofit): ExplorePlacesImplementation {
             if (!this::INSTANCE.isInitialized)
-                INSTANCE = ExplorePlacesApi(retrofit)
+                INSTANCE =
+                    ExplorePlacesImplementation(
+                        retrofit
+                    )
             return INSTANCE
         }
     }
 
-    fun explore(
+    override fun explore(
         latLong: String,
         radius: Int,
         limit: Int
