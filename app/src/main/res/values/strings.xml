@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Nearby</string>
+    <string name="toolbar_title">Near by</string>
+    <string name="single">Single</string>
+
+    <!-- Location related strings -->
+    <string name="location_permission_rational">Location permission is needed for core functionality</string>
+    <string name="ok">OK</string>
+    <string name="location_permission_denied_explanation">
+        Location permission was denied, but it is needed for core functionality</string>
+    <string name="settings">Settings</string>
+
 </resources>
