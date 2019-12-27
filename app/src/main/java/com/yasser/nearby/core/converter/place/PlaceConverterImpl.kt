@@ -25,6 +25,8 @@ class PlaceConverterImpl : PlaceConverter {
     }
 
     private fun extractImageUrl(photoItem: PhotoItem?): String? {
-        return photoItem?.prefix + IMAGE_SIZE + photoItem?.postfix
+        if (photoItem != null)
+            return photoItem.prefix + IMAGE_SIZE + photoItem.suffix
+        return null
     }
 }

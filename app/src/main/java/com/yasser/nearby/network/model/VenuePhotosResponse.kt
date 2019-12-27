@@ -9,5 +9,5 @@ data class Photo(
 
 data class PhotoItem(
     val prefix: String,
-    val postfix: String
+    val suffix: String
 )
