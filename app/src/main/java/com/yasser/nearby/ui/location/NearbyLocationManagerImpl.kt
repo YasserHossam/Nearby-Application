@@ -3,7 +3,6 @@ package com.yasser.nearby.ui.location
 import android.app.Activity
 import android.location.Location
 import android.os.Looper
-import android.util.Log
 import com.google.android.gms.location.*
 
 class NearbyLocationManagerImpl(
@@ -69,11 +68,8 @@ class NearbyLocationManagerImpl(
                 override fun onLocationResult(locationResult: LocationResult?) {
                     super.onLocationResult(locationResult)
                     val currentLocation = locationResult?.lastLocation
-                    Log.v(this::javaClass.name, "NewLocationUpdate," +
-                            " Lat -> ${currentLocation?.latitude} Long -> ${currentLocation?.longitude}")
                     if (currentLocation != null && lastValidLocation != null) {
                         if (currentLocation.distanceTo(lastValidLocation) >= locationUpdateDistance) {
-                            Log.v(this::javaClass.name, "Distance Limit Excceeded")
                             nearbyLocationManagerCallback.onUpdatedLocationFetched(currentLocation)
                             lastValidLocation = currentLocation
                         }
