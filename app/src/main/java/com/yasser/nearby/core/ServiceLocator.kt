@@ -2,6 +2,8 @@ package com.yasser.nearby.core
 
 import android.content.Context
 import com.yasser.nearby.core.converter.place.PlaceConverterImpl
+import com.yasser.nearby.core.repository.mode.ModeRepository
+import com.yasser.nearby.core.repository.mode.ModeRepositoryImpl
 import com.yasser.nearby.core.repository.places.NearbyPlacesRepository
 import com.yasser.nearby.core.repository.places.NearbyPlacesRepositoryImpl
 import com.yasser.nearby.core.utils.getConfigString
@@ -12,6 +14,8 @@ import com.yasser.nearby.network.repository.photos.RemotePlacesPhotosRepositoryI
 import com.yasser.nearby.network.repository.places.RemotePlacesRepositoryImpl
 
 class ServiceLocator private constructor(context: Context) {
+
+    private val modeRepository: ModeRepository
 
     private val nearbyPlacesRepository: NearbyPlacesRepository
 
@@ -40,9 +44,12 @@ class ServiceLocator private constructor(context: Context) {
             remotePlacesPhotosRepository,
             PlaceConverterImpl()
         )
+
+        modeRepository = ModeRepositoryImpl(context)
     }
 
     fun getNearbyPlacesRepository(): NearbyPlacesRepository = nearbyPlacesRepository
+    fun getModeRepository(): ModeRepository = modeRepository
 
     companion object {
 
