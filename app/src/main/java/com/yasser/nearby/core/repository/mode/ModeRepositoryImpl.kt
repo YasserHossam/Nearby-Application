@@ -10,29 +10,18 @@ class ModeRepositoryImpl(context: Context) : ModeRepository {
     )
 
     companion object {
-        private const val SINGLE_MODE = "Single"
-        private const val REALTIME_MODE = "Realtime"
-
-        val MODES = listOf(SINGLE_MODE, REALTIME_MODE)
+        val MODES = listOf(ApplicationMode.SINGLE, ApplicationMode.REALTIME)
 
         private const val SHARED_PREFERENCES_KEY = "MODE_PREFERENCES"
 
         private const val MODE_KEY = "nearby_mode"
     }
 
-    override fun getModes(): List<String> {
-        return MODES
+    override fun chooseMode(@ApplicationMode mode: Int) {
+        sharedPreferences.edit().putInt(MODE_KEY, mode).apply()
     }
 
-    override fun chooseSingleMode() {
-        sharedPreferences.edit().putString(MODE_KEY, SINGLE_MODE).apply()
-    }
-
-    override fun chooseRealtimeMode() {
-        sharedPreferences.edit().putString(MODE_KEY, REALTIME_MODE).apply()
-    }
-
-    override fun getCurrentMode(): String {
-        return sharedPreferences.getString(MODE_KEY, null) ?: REALTIME_MODE
+    override fun getCurrentMode(): Int {
+        return sharedPreferences.getInt(MODE_KEY, ApplicationMode.REALTIME)
     }
 }

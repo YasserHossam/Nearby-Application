@@ -2,6 +2,7 @@ package com.yasser.nearby.ui.places
 
 import com.yasser.nearby.core.NetworkException
 import com.yasser.nearby.core.NoResultsException
+import com.yasser.nearby.core.repository.mode.ApplicationMode
 import com.yasser.nearby.core.repository.mode.ModeRepository
 import com.yasser.nearby.core.repository.places.NearbyPlacesRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,10 +22,10 @@ class PlacesPresenter(
     }
 
     init {
-        val modes = modeRepository.getModes()
-        if (modeRepository.getCurrentMode() == modes[0])
+        val currentMode = modeRepository.getCurrentMode()
+        if (currentMode == ApplicationMode.SINGLE)
             view.onSingleModeTriggered()
-        else
+        else if (currentMode == ApplicationMode.REALTIME)
             view.onRealtimeModeTriggered()
 
     }
@@ -67,24 +68,17 @@ class PlacesPresenter(
         compositeDisposable.dispose()
     }
 
-    override fun getModes(): Array<String> {
-        return modeRepository.getModes().toTypedArray()
-    }
-
-    override fun setModeByIndex(i: Int) {
-        if (i == 0) {
-            modeRepository.chooseSingleMode()
-            view.onSingleModeTriggered()
-        } else {
-            modeRepository.chooseRealtimeMode()
-            view.onRealtimeModeTriggered()
+    override fun setMode(@ApplicationMode mode: Int) {
+        modeRepository.chooseMode(mode)
+        when (mode) {
+            ApplicationMode.SINGLE -> view.onSingleModeTriggered()
+            ApplicationMode.REALTIME -> view.onRealtimeModeTriggered()
         }
     }
 
     override fun isRealtimeMode(): Boolean {
         val currentMode = modeRepository.getCurrentMode()
-        val modes = modeRepository.getModes()
-        return currentMode == modes[1]
+        return currentMode == ApplicationMode.REALTIME
     }
 
     // Construct string from latitude and longitude values

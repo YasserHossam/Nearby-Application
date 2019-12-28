@@ -32,9 +32,7 @@ interface PlacesContract {
 
         fun onDestroy()
 
-        fun getModes(): Array<String>
-
-        fun setModeByIndex(i: Int)
+        fun setMode(mode: Int)
 
         fun isRealtimeMode(): Boolean
     }

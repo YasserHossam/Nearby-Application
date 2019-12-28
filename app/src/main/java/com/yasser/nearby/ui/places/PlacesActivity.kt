@@ -13,6 +13,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.yasser.nearby.R
 import com.yasser.nearby.core.ServiceLocator
 import com.yasser.nearby.core.model.AppPlace
+import com.yasser.nearby.core.repository.mode.ApplicationMode
 import com.yasser.nearby.ui.location.NearbyLocationManager
 import com.yasser.nearby.ui.location.NearbyLocationManagerCallback
 import com.yasser.nearby.ui.location.NearbyLocationManagerImpl
@@ -75,6 +76,12 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View, NearbyLocationM
         super.onStop()
     }
 
+    override fun onDestroy() {
+        nearbyLocationManager.onDestroy()
+        presenter.onDestroy()
+        super.onDestroy()
+    }
+
     // Save recycler view position before rotation change
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -131,8 +138,12 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View, NearbyLocationM
     private fun createChooseModeDialog() {
         AlertDialog.Builder(this)
             .setTitle(R.string.dialog_chang_mode_prompt)
-            .setItems(presenter.getModes()) { _, i ->
-                presenter.setModeByIndex(i)
+            .setItems(R.array.app_modes) { _, i ->
+                val chosenMode =
+                    if (i == 0)
+                        ApplicationMode.SINGLE
+                    else ApplicationMode.REALTIME
+                presenter.setMode(chosenMode)
             }
             .create()
             .show()

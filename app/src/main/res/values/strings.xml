@@ -20,4 +20,8 @@
     <string name="general_error">Something went wrong !!</string>
     <string name="empty_state">No data found !!</string>
 
+    <string-array name="app_modes">
+        <item>Single</item>
+        <item>Realtime</item>
+    </string-array>
 </resources>
