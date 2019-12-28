@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -19,12 +20,15 @@ import com.yasser.nearby.ui.places.adapter.PlacesAdapter
 import com.yasser.nearby.ui.utils.*
 import kotlinx.android.synthetic.main.activity_feed.*
 
+
 class PlacesActivity : AppCompatActivity(), PlacesContract.View, NearbyLocationManagerCallback {
 
     companion object {
         private const val REQUEST_PERMISSIONS_REQUEST_CODE = 51
 
         private const val UPDATE_DISTANCE = 500
+
+        private const val LIST_STATE_KEY = "LIST_STATE"
     }
 
     private val presenter: PlacesContract.Presenter by lazy {
@@ -45,6 +49,9 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View, NearbyLocationM
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
 
+        if(savedInstanceState != null)
+            return
+
         initAdapter()
 
         initClickListeners()
@@ -58,15 +65,33 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View, NearbyLocationM
 
     override fun onStart() {
         super.onStart()
-        if(presenter.isRealtimeMode())
+        if (presenter.isRealtimeMode())
             nearbyLocationManager.startLocationUpdates()
     }
 
     override fun onStop() {
-        super.onStop()
-        if(presenter.isRealtimeMode())
+        if (presenter.isRealtimeMode())
             nearbyLocationManager.stopLocationUpdates()
+        super.onStop()
     }
+
+    // Save recycler view position before rotation change
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        val listState = recyclerPlaces.layoutManager?.onSaveInstanceState()
+        outState.putParcelable(LIST_STATE_KEY, listState)
+    }
+
+    // Restore recycler view position after rotation change
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        val listState = savedInstanceState.getParcelable<Parcelable>(LIST_STATE_KEY)
+        listState?.let {
+            recyclerPlaces.layoutManager?.onRestoreInstanceState(listState)
+        }
+    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
