@@ -15,5 +15,11 @@ data class Meta(
     val code: Int,
 
     @SerializedName("requestId")
-    val requestId: String
+    val requestId: String,
+
+    @SerializedName("errorType")
+    val errorType: String,
+
+    @SerializedName("errorDetail")
+    val errorDetails: String
 )

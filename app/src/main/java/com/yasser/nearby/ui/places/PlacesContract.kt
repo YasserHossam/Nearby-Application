@@ -14,7 +14,7 @@ interface PlacesContract {
 
         fun showNoResultsView()
 
-        fun showGeneralErrorMessage()
+        fun showGeneralErrorView()
 
         fun onNewPlaceFetched(place: AppPlace)
 
@@ -25,6 +25,8 @@ interface PlacesContract {
         fun clearOldResults()
 
         fun hideErrorViews()
+
+        fun showInvalidCredentialsView()
     }
 
     interface Presenter {

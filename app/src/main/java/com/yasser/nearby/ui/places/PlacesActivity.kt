@@ -197,7 +197,7 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View, NearbyLocationM
         layoutEmptyResults.visibility = View.VISIBLE
     }
 
-    override fun showGeneralErrorMessage() {
+    override fun showGeneralErrorView() {
         layoutGeneralError.visibility = View.VISIBLE
     }
 
@@ -227,6 +227,12 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View, NearbyLocationM
     override fun hideErrorViews() {
         layoutEmptyResults.visibility = View.GONE
         layoutGeneralError.visibility = View.GONE
+    }
+
+    override fun showInvalidCredentialsView() {
+        showSnackbar(
+            parentView,
+            getString(R.string.invalid_credentials))
     }
 
     /** NearbyLocationManagerCallback implementation**/

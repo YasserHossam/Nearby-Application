@@ -1,5 +1,6 @@
 package com.yasser.nearby.ui.places
 
+import com.yasser.nearby.core.InvalidCredentialsException
 import com.yasser.nearby.core.NetworkException
 import com.yasser.nearby.core.NoResultsException
 import com.yasser.nearby.core.repository.mode.ApplicationMode
@@ -55,7 +56,11 @@ class PlacesPresenter(
                         when (exception) {
                             is NetworkException -> view.showNoNetworkView()
                             is NoResultsException -> view.showNoResultsView()
-                            else -> view.showGeneralErrorMessage()
+                            is InvalidCredentialsException -> {
+                                view.showInvalidCredentialsView()
+                                view.showGeneralErrorView()
+                            }
+                            else -> view.showGeneralErrorView()
                         }
                     },
                     {

@@ -19,6 +19,7 @@
     <string name="retry">Retry</string>
     <string name="general_error">Something went wrong !!</string>
     <string name="empty_state">No data found !!</string>
+    <string name="invalid_credentials">Invalid or missing client id or client secret</string>
 
     <string-array name="app_modes">
         <item>Single</item>
