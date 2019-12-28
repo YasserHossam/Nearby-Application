@@ -2,31 +2,44 @@ package com.yasser.nearby.ui.places
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.yasser.nearby.R
 import com.yasser.nearby.core.ServiceLocator
 import com.yasser.nearby.core.model.AppPlace
+import com.yasser.nearby.ui.location.NearbyLocationManager
+import com.yasser.nearby.ui.location.NearbyLocationManagerCallback
+import com.yasser.nearby.ui.location.NearbyLocationManagerImpl
 import com.yasser.nearby.ui.places.adapter.PlacesAdapter
 import com.yasser.nearby.ui.utils.*
 import kotlinx.android.synthetic.main.activity_feed.*
 
-class PlacesActivity : AppCompatActivity(), PlacesContract.View {
+class PlacesActivity : AppCompatActivity(), PlacesContract.View, NearbyLocationManagerCallback {
 
     companion object {
         private const val REQUEST_PERMISSIONS_REQUEST_CODE = 51
+
+        private const val UPDATE_DISTANCE = 500
     }
 
-    private val presenter: PlacesPresenter by lazy {
-        PlacesPresenter(ServiceLocator.getInstance().getNearbyPlacesRepository(), this)
+    private val presenter: PlacesContract.Presenter by lazy {
+        PlacesPresenter(
+            ServiceLocator.getInstance().getNearbyPlacesRepository(),
+            ServiceLocator.getInstance().getModeRepository(),
+            this
+        )
     }
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val nearbyLocationManager: NearbyLocationManager by lazy {
+        NearbyLocationManagerImpl(this, UPDATE_DISTANCE)
+    }
+
+    /** Android Activity methods **/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,20 +47,71 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View {
 
         initAdapter()
 
+        initClickListeners()
+
         if (!checkPermissions()) {
             requestPermissions()
         } else {
-            initLocationClient()
-            getLastKnownLocation()
+            nearbyLocationManager.getLocation()
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        if(presenter.isRealtimeMode())
+            nearbyLocationManager.startLocationUpdates()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if(presenter.isRealtimeMode())
+            nearbyLocationManager.stopLocationUpdates()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            if (permissions.size == 1 &&
+                permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED
+            ) {
+                nearbyLocationManager.getLocation()
+            } else {
+                showSnackbar(
+                    parentView,
+                    getString(R.string.location_permission_denied_explanation),
+                    getString(R.string.settings),
+                    Snackbar.LENGTH_INDEFINITE
+                ) { goToMobileSettings() }
+            }
+        }
+    }
+
+
+    /** Private Methods **/
 
     private fun initAdapter() {
         recyclerPlaces.layoutManager = LinearLayoutManager(this)
         recyclerPlaces.adapter = PlacesAdapter(arrayListOf())
     }
 
-    /** Private Methods **/
+    private fun initClickListeners() {
+        fabChangeMode.setOnClickListener { createChooseModeDialog() }
+    }
+
+    private fun createChooseModeDialog() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.dialog_chang_mode_prompt)
+            .setItems(presenter.getModes()) { _, i ->
+                presenter.setModeByIndex(i)
+            }
+            .create()
+            .show()
+    }
 
     private fun checkPermissions(): Boolean {
         return isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -74,46 +138,8 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View {
         }
     }
 
-    private fun initLocationClient() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-    }
-
-    private fun getLastKnownLocation() {
-        progress.visibility = View.VISIBLE
-        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
-            location?.let {
-                presenter.getNearbyPlaces(it.latitude, it.longitude)
-            }
-        }
-    }
-
-    /** AppCompatActivity methods **/
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            if (permissions.size == 1 &&
-                permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
-                grantResults[0] == PackageManager.PERMISSION_GRANTED
-            ) {
-                initLocationClient()
-                getLastKnownLocation()
-            } else {
-                showSnackbar(
-                    parentView,
-                    getString(R.string.location_permission_denied_explanation),
-                    getString(R.string.settings),
-                    Snackbar.LENGTH_INDEFINITE
-                ) { goToMobileSettings() }
-            }
-        }
-    }
-
     /** FeedContractView Implementation**/
+
     override fun showProgress() {
         progress.visibility = View.VISIBLE
     }
@@ -134,9 +160,36 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View {
 
     }
 
-    override fun onPlaceFetched(place: AppPlace) {
+    override fun onNewPlaceFetched(place: AppPlace) {
         val adapter = recyclerPlaces.adapter
         if (adapter is PlacesAdapter)
             adapter.addItem(place)
+    }
+
+    override fun onSingleModeTriggered() {
+        tvMode.text = getString(R.string.activity_feed_mode_single)
+        nearbyLocationManager.stopLocationUpdates()
+    }
+
+    override fun onRealtimeModeTriggered() {
+        tvMode.text = getString(R.string.activity_feed_mode_realtime)
+        nearbyLocationManager.startLocationUpdates()
+    }
+
+    override fun clearOldResults() {
+        val adapter = recyclerPlaces.adapter
+        if (adapter is PlacesAdapter)
+            adapter.clear()
+    }
+
+    /** NearbyLocationManagerCallback implementation**/
+
+    override fun onLocationFetched(location: Location) {
+        presenter.getNearbyPlaces(location.latitude, location.longitude)
+    }
+
+    override fun onUpdatedLocationFetched(location: Location) {
+        showSnackbar(parentView, getString(R.string.activity_walk_distance, UPDATE_DISTANCE))
+        presenter.getNearbyPlaces(location.latitude, location.longitude)
     }
 }

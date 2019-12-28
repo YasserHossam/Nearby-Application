@@ -7,16 +7,33 @@ interface PlacesContract {
 
     interface View {
         fun showProgress()
+
         fun hideProgress()
+
         fun showNoNetworkView()
+
         fun showNoResultsView()
+
         fun showGeneralErrorMessage()
-        fun onPlaceFetched(place: AppPlace)
+
+        fun onNewPlaceFetched(place: AppPlace)
+
+        fun onSingleModeTriggered()
+
+        fun onRealtimeModeTriggered()
+
+        fun clearOldResults()
     }
 
     interface Presenter {
         fun getNearbyPlaces(latitude: Double, longitude: Double)
 
         fun onDestroy()
+
+        fun getModes(): Array<String>
+
+        fun setModeByIndex(i: Int)
+
+        fun isRealtimeMode(): Boolean
     }
 }

@@ -34,6 +34,11 @@ class PlacesAdapter(private val placesList: ArrayList<AppPlace>) :
         notifyItemInserted(placesList.size - 1)
     }
 
+    fun clear() {
+        placesList.clear()
+        notifyDataSetChanged()
+    }
+
     class ItemPlaceViewHolder(override val containerView: View) : LayoutContainer,
         RecyclerView.ViewHolder(containerView) {
 
