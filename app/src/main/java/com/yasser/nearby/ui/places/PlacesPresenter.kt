@@ -33,6 +33,7 @@ class PlacesPresenter(
 
     override fun getNearbyPlaces(latitude: Double, longitude: Double) {
         view.showProgress()
+        view.hideErrorViews()
         view.clearOldResults()
 
         val nearbyPlacesObservable = nearbyPlacesRepository.getNearbyPlaces(

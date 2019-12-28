@@ -15,5 +15,9 @@
     <string name="activity_feed_mode_single">Single</string>
     <string name="activity_feed_mode_realtime">Realtime</string>
     <string name="activity_walk_distance">You have walked %d distance from the latest location updates\\n fetching places from server</string>
+    <string name="offline_message">Your network is unavailable. Check your data or wifi connection.</string>
+    <string name="retry">Retry</string>
+    <string name="general_error">Something went wrong !!</string>
+    <string name="empty_state">No data found !!</string>
 
 </resources>

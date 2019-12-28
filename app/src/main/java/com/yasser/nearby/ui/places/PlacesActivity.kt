@@ -49,7 +49,7 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View, NearbyLocationM
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_feed)
 
-        if(savedInstanceState != null)
+        if (savedInstanceState != null)
             return
 
         initAdapter()
@@ -174,15 +174,20 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View, NearbyLocationM
     }
 
     override fun showNoNetworkView() {
-
+        showSnackbar(
+            parentView,
+            getString(R.string.offline_message),
+            getString(R.string.retry),
+            Snackbar.LENGTH_INDEFINITE
+        ) { nearbyLocationManager.getLocation() }
     }
 
     override fun showNoResultsView() {
-
+        layoutEmptyResults.visibility = View.VISIBLE
     }
 
     override fun showGeneralErrorMessage() {
-
+        layoutGeneralError.visibility = View.VISIBLE
     }
 
     override fun onNewPlaceFetched(place: AppPlace) {
@@ -194,6 +199,7 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View, NearbyLocationM
     override fun onSingleModeTriggered() {
         tvMode.text = getString(R.string.activity_feed_mode_single)
         nearbyLocationManager.stopLocationUpdates()
+        nearbyLocationManager.getLocation()
     }
 
     override fun onRealtimeModeTriggered() {
@@ -205,6 +211,11 @@ class PlacesActivity : AppCompatActivity(), PlacesContract.View, NearbyLocationM
         val adapter = recyclerPlaces.adapter
         if (adapter is PlacesAdapter)
             adapter.clear()
+    }
+
+    override fun hideErrorViews() {
+        layoutEmptyResults.visibility = View.GONE
+        layoutGeneralError.visibility = View.GONE
     }
 
     /** NearbyLocationManagerCallback implementation**/

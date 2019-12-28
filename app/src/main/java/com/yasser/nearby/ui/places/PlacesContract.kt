@@ -23,6 +23,8 @@ interface PlacesContract {
         fun onRealtimeModeTriggered()
 
         fun clearOldResults()
+
+        fun hideErrorViews()
     }
 
     interface Presenter {
